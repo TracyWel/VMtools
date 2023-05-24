@@ -6,7 +6,15 @@ import subprocess
 
 # @main_requires_admin(return_output=True)
 def setup_upload_user(user_name, user_pw):
-    print("setup_upload_user: Do stuff here that requires being run as an admin.")
+    """
+    Executes Windows CMD shell commands to create and set permissions
+    for an upload user.
+    :param user_name: the upload user name
+    :param user_pw: the upload user password
+    :return: none
+    """
+
+    print("setup_upload_user: Create upload user.")
     os.system('dir C:\\Users\\TracyTD')
     # command_str1 = f'net user /add {user_name} {user_pw} /passwordchg:no /passwordreq:yes'
     # os.system(command_str1)
@@ -20,7 +28,14 @@ def setup_upload_user(user_name, user_pw):
 
 
 def setup_folder_structure(cust_folder):
-    print("setup_folder_structure: Do stuff here that requires being run as an admin.")
+    """
+    Creates the necessary upload and backup folder structures by executing
+    Powershell commands.
+    :param cust_folder: Customer name to be used for folder structure
+    :return: none
+    """
+
+    print("setup_folder_structure: Creating upload and backup folder structures.")
     ps_execute_str = f'C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe'
     print(f'Ready to run Powershell commands with {ps_execute_str}')
 
@@ -41,25 +56,66 @@ def setup_folder_structure(cust_folder):
 
 # @main_requires_admin(return_output=True)
 def grant_upload_user_permissions(user_name, cust_folder):
-    print("grant_upload_user_permissions: Do stuff here that "
-          "requires being run as an admin.")
+    """
+    Grants permission for the upload user to write to the upload folder
+    using Windows CMD commands.
+    :param user_name:
+    :param cust_folder:
+    :return:
+    """
+
+    print("grant_upload_user_permissions: Allowing upload user to write"
+          "to upload folder.")
     os.system('dir C:\\Users\\TracyTD')
 
     # command_str4 = f'icacls "F:\\sftp\\{cust_folder}" /grant {user_name}:(OI)(CI)M /T'
     # os.system(command_str4)
+
     input("Press enter to close the window. >")
 
 
+def print_instructions():
+    """
+    Prints out instructions for the user to complete tasks that cannot
+    be automated here.
+    :return: none
+    """
+
+    print(
+        """
+        =========\n\nTo setup SSH access for uploads do the following:
+
+        """
+    )
+    print(
+        """
+        \nIf you have made a mistake and wish to remove an upload user, type\n
+        net user "user name" /delete\n
+
+        If that doesn't work, type\n
+        net user "user name" /delete /domain\n
+        
+        You may delete folders and files in both the F and Z drives manually.
+        """
+    )
+
+
 def setup_user_main():
-    print('Please ender the customer upload name - usually something '
+    """
+    Partially automates the user upload set up process on the TD virtual
+    machine using a few bits of information
+    :return: none
+    """
+
+    print('Please enter the customer upload name - usually something '
           'like upload_customername:')
     upload_name = input()
 
-    print('Please ender the upload password - 20 plus letters and '
-          'numbers (no special symbols):')
+    print('Please enter the upload password - 20 plus upper- and lower-case'
+          'letters and numbers (no special symbols):')
     upload_pw = input()
 
-    print('Please ender the customer name for folder structure - '
+    print('Please enter the customer name for folder structure - '
           'usually somthing like Customername):')
     folder_name = input()
 
@@ -82,6 +138,8 @@ def setup_user_main():
     #     admin_stdout_str, admin_stderr_str, *_ = rv
     #     if "Do stuff" in admin_stdout_str:
     #         print("It worked.")
+
+    print_instructions()
 
 
 if __name__ == "__main__":
