@@ -1,0 +1,55 @@
+Step 1: Create an upload username and password
+Step 2: Global replace upload_test with the new upload username from Step 1
+Step 3: Replace "reallylongcomplexpasswordhere" (including the quotes) with password from Step 1
+Step 4: Global replace Customer with the customer folder name you want
+
+
+____
+
+
+
+elevated CMD
+
+net user /add upload_test "reallylongcomplexpasswordhere" /passwordchg:no /passwordreq:yes
+
+net localgroup sftp_users upload_test /add
+net localgroup users upload_test /delete
+
+
+Elevated PS
+if ((Test-Path -Path "F:\sftp\Customer") -match $False) {md F:\sftp\Customer}
+if ((Test-Path -Path "F:\sftp\Customer\.log") -match $False) {md F:\sftp\Customer\.log}
+if ((Test-Path -Path "Z:\sftp\Customer") -match $False) {md Z:\sftp\Customer}
+
+
+elevated CMD
+
+icacls "F:\sftp\Customer" /grant upload_test:(OI)(CI)M /T
+
+
+
+___
+
+To clean up
+elevated CMD
+
+net users
+
+net user "user name" /delete
+if that doesn't work:
+net user "user name" /delete /domain
+
+
+Delete folders manually
+
+CREATE THE USER ACCOUNT IN THE SFTP SOFTWARE
+Step 4 is to create the SFTP user account. Open the CopSSH control panel and perform the following steps.
+1.	On the Users tab, click the Add button.
+2.	On the first page of the CopSSH user activation page, click the Forward button.
+3.	On the user page, select the new upload_customer account you created. Click Forward.
+4.	On the select options page, change access type to SFTP.
+5.	On the select options page, for home directory enter the path created in step 2 (Create local folders for customer) above. For example, F:\sftp\Customer.
+6.	On the select options page, verify the 3 checks boxes are selected, click Forward.
+7.	On the confirm activation page, click Apply.
+CUSTOMER IS READY TO UPLOAD
+After following the above steps, the customer is ready to upload via SFTP. The customer can upload to the host upload.truthdata.net on port 222.  Or sftp.truthdata.net on port 22
