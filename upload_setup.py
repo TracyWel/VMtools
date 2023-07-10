@@ -3,7 +3,7 @@ import os
 import subprocess
 
 
-@main_requires_admin(return_output=True)
+# @main_requires_admin(return_output=True)
 def setup_upload_user(user_name, user_pw):
     """
     Executes Windows CMD shell commands to create and set permissions
@@ -38,22 +38,30 @@ def setup_folder_structure(cust_folder):
     ps_execute_str = f'C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe'
     print(f'Ready to run Powershell commands with {ps_execute_str}')
 
-    ps_command_str1 = f'if ((Test-Path -Path "F:\\sftp\\{cust_folder}") ' \
-                      f'-match $False) {{md F:\\sftp\\{cust_folder}}}'
+    base_folder = 'C:\\Users\\TracyTD'
+    arch_base_folder = 'C:\\Users\\TracyTD'
+    # base_folder = 'F:\\sftp'
+    # arch_base_folder = 'Z:\\sftp'
+
+    ps_command_str1 = f'{ps_execute_str} if ((Test-Path -Path ' \
+                      f'"{base_folder}\\{cust_folder}") ' \
+                      f'-match $False) {{md {base_folder}\\{cust_folder}}}'
     subprocess.call(ps_command_str1, shell=True)
 
-    ps_command_str2 = f'if ((Test-Path -Path "F:\\sftp\\{cust_folder}\\.log") ' \
-                      f'-match $False) {{md F:\\sftp\\{cust_folder}\.log}}'
+    ps_command_str2 = f'{ps_execute_str} if ((Test-Path -Path ' \
+                      f'"{base_folder}\\{cust_folder}\\.log") ' \
+                      f'-match $False) {{md {base_folder}\\{cust_folder}\.log}}'
     subprocess.call(ps_command_str2, shell=True)
 
-    ps_command_str3 = f'if ((Test-Path -Path "Z:\\sftp\\{cust_folder}") ' \
-                      f'-match $False) {{md Z:\\sftp\\{cust_folder}}}'
+    ps_command_str3 = f'{ps_execute_str} if ((Test-Path -Path ' \
+                      f'"{arch_base_folder}\\{cust_folder}") ' \
+                      f'-match $False) {{md {arch_base_folder}\\{cust_folder}}}'
     subprocess.call(ps_command_str3, shell=True)
 
     input("Press enter to continue. >")
 
 
-@main_requires_admin(return_output=True)
+# @main_requires_admin(return_output=True)
 def grant_upload_user_permissions(user_name, cust_folder):
     """
     Grants permission for the upload user to write to the upload folder
