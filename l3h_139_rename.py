@@ -82,6 +82,7 @@ def l3h_133_rename_main(argv):
     """
 # def l3h_133_rename_main():
 
+    logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
     logging.info('l3h_133_rename_main: Begin processing')
 
     command_line_arguments = parse_command_arguments(argv)
@@ -96,9 +97,11 @@ def l3h_133_rename_main(argv):
 
     for file_139 in files_only:
         flight_df = read_to_dataframe(path_139, file_139)
+        tail_num = file_139.split('_')[1]
         mon, day, year, hr, mi, sec = read_MDY_HMS(flight_df)
         dt_str = build_dt_string(mon, day, year, hr, mi, sec)
-        new_filename = f'{dt_str}_TD.csv'
+        new_filename = f'{tail_num}_{dt_str}_TD.csv'
+        logging.info('l3h_133_rename_main: Renaming %s as %s', file_139, new_filename)
         if os.path.exists(path_139):
             try:
                 os.rename(os.path.join(path_139, file_139),
