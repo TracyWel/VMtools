@@ -18,11 +18,14 @@ def setup_upload_user(user_name, user_pw):
     command_str1 = f'net user /add {user_name} {user_pw} /passwordchg:no /passwordreq:yes'
     os.system(command_str1)
 
-    command_str2 = f'net localgroup sftp_users {user_name} /add'
+    command_str2 = f"WMIC USERACCOUNT WHERE Name='{user_name}' SET PasswordExpires=FALSE"
     os.system(command_str2)
 
-    command_str3 = f'net localgroup users {user_name} /delete'
+    command_str3 = f'net localgroup sftp_users {user_name} /add'
     os.system(command_str3)
+
+    command_str4 = f'net localgroup users {user_name} /delete'
+    os.system(command_str4)
     input("Press enter to continue. >")
 
 
