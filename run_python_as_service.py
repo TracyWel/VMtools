@@ -33,13 +33,14 @@ def filter_by_extension(onlyfiles: List[str], extension_str: str):
 def move_airsync_files():
     current_time = dt.datetime.now()
     file_path = 'U:'
-    destination_path = 'F:/sftp/AirSync.staging'
+    destination_path = 'F:/sftp/AirSync.staging/.log'
     log_file = os.path.join(destination_path, 'staging.log')
     logging.basicConfig(filename=log_file, filemode='a',
                         encoding='utf-8', level=logging.DEBUG)
 
     onlyfiles_csv = filter_by_extension(os.listdir(file_path), 'csv')
-    logging.info('move_airsync_files: $s files to move',len(onlyfiles_csv))
+    logging.info('move_airsync_files: %s files to move at time %s',
+                 len(onlyfiles_csv), current_time)
 
     for f in onlyfiles_csv:
         shutil.move(os.path.join(file_path, f), os.path.join(destination_path, f))
@@ -48,6 +49,12 @@ def move_airsync_files():
 
 
 def start_process():
+    """
+    To be run as a service on Windows. Solving the permissions problem with the
+    Windows Scheduler that processes run as a different user and cannot find
+    the drive mapped from the AirSync Linux VM.
+    :return:
+    """
     keep_running = True
     while keep_running:
         move_airsync_files()
