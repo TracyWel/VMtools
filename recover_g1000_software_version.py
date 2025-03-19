@@ -44,6 +44,7 @@ def parse_command_arguments(argv):
 
 # file_path = "C:/Users/TracyTD/OneDrive - Truth Data Insights/TD/Software/AGL/AGL/data_LFN/.backup"
 def get_version_num(argv):
+
     logging.info('cicd_push_main: Begin processing')
 
     command_line_arguments = parse_command_arguments(argv)
@@ -52,18 +53,29 @@ def get_version_num(argv):
 
     onlyfiles = [f for f in listdir(file_path) if isfile(join(file_path, f))]
 
-    software_str = 'system_software_part_number='
+    software_str = 'system_id='  # system
+    # software_str = 'system_software_part_number='  # software
+
     version_list = []
     for g_file in onlyfiles:
         with open(join(file_path, g_file)) as g1000_f:
             first_line = g1000_f.readline()
-            # print(first_line)
             index = -1
             if software_str in first_line:
                 index = first_line.find(software_str)
-            soft_id = first_line[index + 30: index + 41]
+            else:
+                continue
+            # soft_id = first_line[index + 30: index + 41]  # software
+
+            # system
+            temp_id = first_line[index + 11: index + 32]
+            split_list = temp_id.split(',')
+            soft_id = split_list[0].replace('"', "")
         print(g_file, soft_id)
         version_list.append(soft_id)
+
+    unique_ids_list = list(set(version_list))
+    print(f'Unique IDs: {unique_ids_list}')
 
     output_df = pd.DataFrame(
         {'Filenames': onlyfiles,
